@@ -7,6 +7,7 @@ Type=sddm-theme
 Version=1.0
 Website=https://github.com/leonWindhorst/sddm-rose-pine
 Screenshot=Preview.png
+QtVersion=6
 MainScript=Main.qml
 ConfigFile=theme.conf
 Email=leon@windhorst.dev

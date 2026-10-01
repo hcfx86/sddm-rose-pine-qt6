@@ -20,7 +20,7 @@
 import QtQuick 2.11
 import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 
 Column {
     id: inputContainer
@@ -49,6 +49,7 @@ Column {
             model: userModel
             currentIndex: model.lastIndex
             textRole: "name"
+            contentItem: Item { }
             hoverEnabled: true
             onActivated: {
                 username.text = currentText
@@ -83,6 +84,7 @@ Column {
                     enabled: false
                     icon.color: root.palette.text
                     icon.source: Qt.resolvedUrl("../Assets/User.svgz")
+                    background: Item { }
             }
 
             background: Rectangle {
@@ -171,6 +173,7 @@ Column {
             height: root.font.pointSize * 3
             width: parent.width
             placeholderText: config.TranslateUsernamePlaceholder || textConstants.userName
+            placeholderTextColor: root.palette.text
             selectByMouse: true
             horizontalAlignment: TextInput.AlignHCenter
             renderType: Text.QtRendering
@@ -218,6 +221,7 @@ Column {
             selectByMouse: true
             echoMode: revealSecret.checked ? TextInput.Normal : TextInput.Password
             placeholderText: config.TranslatePasswordPlaceholder || textConstants.password
+            placeholderTextColor: root.palette.text
             horizontalAlignment: TextInput.AlignHCenter
             passwordCharacter: "•"
             passwordMaskDelay: config.ForceHideCompletePassword == "true" ? undefined : 1000

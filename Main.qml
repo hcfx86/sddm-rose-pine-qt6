@@ -20,7 +20,7 @@
 import QtQuick 2.11
 import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import Qt5Compat.GraphicalEffects
 import "Components"
 
 Pane {
@@ -40,7 +40,7 @@ Pane {
     palette.window: "#444"
 
     font.family: config.Font
-    font.pointSize: config.FontSize !== "" ? config.FontSize : parseInt(height / 80)
+    font.pointSize: config.FontSize ? config.FontSize : parseInt(height / 80)
     focus: true
 
     property bool leftleft: config.HaveFormBackground == "true" &&

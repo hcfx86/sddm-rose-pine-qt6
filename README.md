@@ -2,80 +2,31 @@
 
 This is a customized version of the [Sugar Dark Theme](https://github.com/MarianArlt/sddm-sugar-dark) with colors from the [Rose Pine](https://rosepinetheme.com) palette.
 
-All controls use the **[latest Qt Quick Controls 2](http://doc.qt.io/qt-5/qtquickcontrols2-index.html)** for [increased performance](https://blog.qt.io/blog/2015/03/31/qt-quick-controls-for-embedded/) on low end or even embedded systems and beautiful color transitions.
+This fork of [lwndhrst/sddm-rose-pine](https://github.com/lwndhrst/sddm-rose-pine) targets **Qt6** SDDM (e.g. Debian, whose SDDM is Qt6-only):
 
-To learn how to customize the theme you should check the [Sugar Wiki on Github](https://github.com/MarianArlt/sddm-sugar-light/wiki/Before-you-begin) or the very well documented and included [`theme.conf`](theme.conf).
-Here are some previews of nifty variable names you can set/unset/change to customize your sugar:
-`ThemeColor`, `Font`, `HourFormat`, `ForceRightToLeft`, `TranslateUsernamePlaceholder`.
+- `metadata.desktop` sets `QtVersion=6`; without it SDDM looks for the Qt5 `sddm-greeter` binary and silently falls back to the default theme.
+- `QtGraphicalEffects` no longer exists in Qt6, so the components import `Qt5Compat.GraphicalEffects` instead.
+- Qt6 passes empty `theme.conf` values (`FontSize=`, `HeaderText=`) to QML as `undefined` rather than `""`, so those checks test truthiness instead of `!== ""`.
+- Qt6's per-state palettes give the disabled user-icon button an opaque black background and let the hidden user `ComboBox` draw the first letter of the username next to the icon; both get an empty `Item` instead. The default placeholder text colour is also unreadable on the dark fields, so it is set explicitly.
+
+`background.jpg` is the maintainer's wallpaper rather than upstream's. To use a different one, put it in the theme directory and set `Background=` in a `theme.conf.user` there rather than editing `theme.conf`.
 
 ### Dependencies
 
-[`sddm >= 0.18.0`](https://github.com/sddm/sddm), [`qt5 >= 5.11.0`](http://doc.qt.io/qt-5/index.html), [`qt5-quickcontrols2 >= 5.11.0`](http://doc.qt.io/qt-5/qtquickcontrols2-index.html), [`qt5-svg >= 5.11.0`](https://doc.qt.io/qt-5/qtsvg-index.html) [`qt5-graphicaleffects >= 5.11.0`](https://doc.qt.io/qt-5/qtgraphicaleffects-index.html)
-
-*Make sure these are up to date!*
+[`sddm >= 0.21.0`](https://github.com/sddm/sddm) built against Qt6, Qt Quick Controls 2, Qt SVG and the Qt5Compat graphical effects (Debian: `qml6-module-qt5compat-graphicaleffects`).
 
 ### Installing the theme
 
-Clone this repository and move the contents to the theme directory of SDDM:
+Clone this repository into the theme directory of SDDM:
 
 ```
-$ sudo mv sddm-rose-pine /usr/share/sddm/themes
+$ sudo git clone https://github.com/hcfx86/sddm-rose-pine-qt6.git /usr/share/sddm/themes/sddm-rose-pine
 ```
-This will move all files to a folder called "sddm-rose-pine" inside of the themes directory of SDDM.  
+This will put all files in a folder called "sddm-rose-pine" inside of the themes directory of SDDM.  
 
 After that you will have to point SDDM to the new theme by editing its config file, preferrably at `/etc/sddm.conf.d/sddm.conf` *(create if necessary)*. You can take the default config file of SDDM as a reference: `/etc/sddm.conf/usr/lib/sddm/sddm.conf.d/sddm.conf`.  
 
 In the `[Theme]` section simply add the themes name: `Current=sddm-rose-pine`. Also see the [Arch wiki on SDDM](https://wiki.archlinux.org/index.php/SDDM).
-
-### NixOS
-
-You can create a custom package and install it via environment.systemPackages.
-
-```nix
-# sddm-rose-pine.nix
-
-{ stdenvNoCC
-, fetchFromGitHub
-, libsForQt5
-}:
-
-stdenvNoCC.mkDerivation rec {
-  pname = "sddm-rose-pine-theme";
-  version = "1.2";
-  dontBuild = true;
-
-  propagatedUserEnvPkgs = [
-    libsForQt5.qt5.qtgraphicaleffects
-  ];
-
-  src = fetchFromGitHub {
-    owner = "lwndhrst";
-    repo = "sddm-rose-pine";
-    rev = "v${version}";
-    sha256 = "+WOdazvkzpOKcoayk36VLq/6lLOHDWkDykDsy8p87JE=";
-  };
-
-  installPhase = ''
-    mkdir -p $out/share/sddm/themes
-    cp -aR $src $out/share/sddm/themes/rose-pine
-  '';
-}
-```
-
-```nix
-# configuration.nix
-
-{
-  services.xserver.displayManager.sddm.theme = "rose-pine";
-
-  # ...
-
-  environment.systemPackages = with pkgs; [
-    # Install the derivation
-    (callPackage ./sddm-rose-pine.nix {})
-  ];
-}
-```
 
 ### Theming the theme
 
